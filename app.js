@@ -8,7 +8,7 @@
   const CALENDAR_START_MINUTE = 0;
   const CALENDAR_END_MINUTE = 24 * 60;
   const CALENDAR_HOUR_HEIGHT = 60;
-  const CALENDAR_INITIAL_SCROLL_MINUTE = 7 * 60;
+  const CALENDAR_INITIAL_SCROLL_MINUTE = 7 * CALENDAR_HOUR_HEIGHT;
   const TIMER_MODES = { focus: { label: 'FOCUS SESSION', minutes: 25 }, short: { label: 'SHORT BREAK', minutes: 5 }, long: { label: 'LONG BREAK', minutes: 15 } };
   const validTime = value => typeof value === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
   const validDate = value => {
@@ -199,6 +199,14 @@
     return `${hour % 12 || 12}${minute ? `:${pad(minute)}` : ''}${suffix}`;
   }
 
+  function scrollCalendarToInitialHour() {
+    const viewport = $('#calendar-viewport');
+    const previousBehavior = viewport.style.scrollBehavior;
+    viewport.style.scrollBehavior = 'auto';
+    viewport.scrollTop = CALENDAR_INITIAL_SCROLL_MINUTE;
+    viewport.style.scrollBehavior = previousBehavior;
+  }
+
   function renderTasks() {
     const total = state.tasks.length; const completed = state.tasks.filter(task => task.completed).length;
     const percent = total ? Math.round(completed * 100 / total) : 0;
@@ -217,7 +225,7 @@
     } else {
       list.innerHTML = filtered.map(task => {
         const difference = dateDifference(task.due); const dateLabel = difference < 0 ? `${Math.abs(difference)}d overdue` : difference === 0 ? 'Due today' : difference === 1 ? 'Due tomorrow' : `Due ${formatShortDate(task.due)}`;
-        const priorityLabel = task.priority === 'med' ? 'Med' : task.priority[0].toUpperCase() + task.priority.slice(1);
+        const priorityLabel = task.priority === 'med' ? 'Medium' : task.priority[0].toUpperCase() + task.priority.slice(1);
         return `<div class="task-row ${task.completed ? 'completed' : ''}" data-id="${escapeHTML(task.id)}"><button class="task-check" data-action="toggle" aria-label="Mark ${escapeHTML(task.title)} ${task.completed ? 'incomplete' : 'complete'}" aria-pressed="${task.completed}"><i data-lucide="check"></i></button><div class="task-copy"><span class="task-name">${escapeHTML(task.title)}</span><span class="task-meta"><span class="priority-badge ${task.priority}">${priorityLabel}</span><span class="task-date ${difference < 0 && !task.completed ? 'overdue' : ''}">${dateLabel}</span></span></div><div class="task-actions"><button class="task-action" data-action="edit" aria-label="Edit task"><i data-lucide="pencil"></i></button><button class="task-action" data-action="delete" aria-label="Delete task"><i data-lucide="trash-2"></i></button></div></div>`;
       }).join('');
     }
@@ -488,10 +496,7 @@
   // An expired timer restored from a closed tab is completed quietly; playback requires a live user gesture.
   if (state.timer.running && state.timer.endAt <= Date.now()) { state.timer.running = false; state.timer.endAt = null; state.timer.remaining = 0; if (state.timer.mode === 'focus') state.timer.sessions++; saveState(); }
   renderAll();
-  const calendarViewport = $('#calendar-viewport');
-  calendarViewport.style.scrollBehavior = 'auto';
-  calendarViewport.scrollTop = CALENDAR_INITIAL_SCROLL_MINUTE;
-  calendarViewport.style.removeProperty('scroll-behavior');
+  scrollCalendarToInitialHour();
   saveState();
   window.addEventListener('pagehide', () => {
     clearTimeout(saveTimeout);

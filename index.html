@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#050505">
+  <meta name="theme-color" content="#050810">
   <meta name="description" content="A calm, focused command center for your study week.">
   <title>Kevin's Timetable</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -54,7 +54,7 @@
           <section class="panel glass-panel timetable-panel reveal" id="timetable" style="--delay: 220ms">
             <div class="panel-heading schedule-heading"><div><div class="section-kicker"><span class="kicker-square cyan-square"></span> PLAN YOUR WEEK</div><h2>Weekly timetable</h2><p class="panel-subtitle">Your week, at a glance.</p></div><div class="schedule-tools"><button class="icon-button" id="week-prev" aria-label="Previous week"><i data-lucide="chevron-left"></i></button><button class="week-label" id="week-label" aria-live="polite">—</button><button class="icon-button" id="week-next" aria-label="Next week"><i data-lucide="chevron-right"></i></button><button class="button button-outline" id="today-btn">Today</button><button class="button button-primary add-session-btn" id="add-session"><i data-lucide="plus"></i><span>Session</span></button></div></div>
             <div class="calendar-legend" role="group" aria-label="Filter timetable by session type"><button class="session-filter filter-lecture active" type="button" data-session-filter="lecture" aria-pressed="true"><i class="legend-dot"></i> Lectures</button><button class="session-filter filter-lab active" type="button" data-session-filter="lab" aria-pressed="true"><i class="legend-dot"></i> Labs</button><button class="session-filter filter-tutorial active" type="button" data-session-filter="tutorial" aria-pressed="true"><i class="legend-dot"></i> Tutorials</button><button class="session-filter filter-study active" type="button" data-session-filter="study" aria-pressed="true"><i class="legend-dot"></i> Study</button><button class="session-filter filter-club active" type="button" data-session-filter="club" aria-pressed="true"><i class="legend-dot"></i> Clubs</button><button class="session-filter filter-competition active" type="button" data-session-filter="competition" aria-pressed="true"><i class="legend-dot"></i> Competitions</button><button class="session-filter filter-other active" type="button" data-session-filter="other" aria-pressed="true"><i class="legend-dot"></i> Other</button><span class="legend-help"><i data-lucide="mouse-pointer-2"></i> Click a session to edit</span></div>
-            <div class="calendar-viewport" id="calendar-viewport" role="region" aria-label="Weekly timetable, scroll vertically through all 24 hours" tabindex="0"><div class="calendar-grid" id="calendar-grid"></div></div>
+            <div class="calendar-viewport" id="calendar-viewport" role="region" aria-label="Weekly timetable, 00:00 through 23:00. Scroll vertically through all 24 hours." tabindex="0"><div class="calendar-grid" id="calendar-grid"></div></div>
           </section>
 
           <section class="panel glass-panel tasks-panel reveal" id="tasks" style="--delay: 270ms">

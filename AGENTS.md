@@ -20,8 +20,8 @@
 - **Accessibility:** Respect `@media (prefers-reduced-motion: reduce)` by disabling non-essential movement animations.
 
 ## 4. Core Features & Data Persistence
-- **Interactive Weekly Timetable:** CSS Grid schedule (Monday–Sunday) supporting custom color-coded blocks (cyan, violet, emerald, amber, rose), click-to-edit/delete, and a live current-time line.
-- **Study Task & Assignment Tracker:** Priority badges, due dates, progress bar, and smooth strike-through/completion animations.
+- **Interactive Weekly Timetable:** CSS Grid schedule (Monday–Sunday) supporting custom color-coded blocks, click-to-edit/delete, and a live current-time line.
+- **Study Task & Assignment Tracker:** Priority badges (Low = Green, Medium = Yellow, High = Red), due dates, progress bar, and smooth strike-through/completion animations.
 - **Exam Countdown Telemetry:** Live ticking days/hours/minutes/seconds counters in `JetBrains Mono` with radial or linear urgency bars.
 - **Pomodoro Focus Engine:** Circular SVG progress ring with smooth stroke-dashoffset transitions and a synthesized Web Audio API chime on completion.
 - **Persistence & Backup:** Auto-save all state to `localStorage` with JSON Export/Import buttons so data can be backed up or transferred anytime.
@@ -31,6 +31,7 @@
 - Every button, filter, modal, and toggle must be 100% functional with zero placeholder stubs.
 
 ## Custom Color & Time Rules
+- **Branding:** Title and sidebar header must be strictly named **"Kevin's Timetable"**.
 - **Session Types & Colors:** 
   - Lectures: Yellow (`#facc15`)
   - Labs: Purple (`#a855f7`)
@@ -39,5 +40,5 @@
   - Clubs: Green (`#10b981`)
   - Competitions: Turquoise (`#06b6d4`)
   - Other: Brown (`#b45309`)
-- **Task Priority Icons:** Low = Green, Medium = Yellow, High = Red.
-- **Timetable Hours:** Scrollable grid spanning 12:00 AM (00:00) to 11:00 PM (23:00)  with sticky hour labels and vertical time slots.
+- **Task Priority Icons:** Low = Green (`#10b981`), Medium = Yellow (`#facc15`), High = Red (`#ef4444`).
+- **Timetable Hours:** Full 24-hour vertical scrollable grid spanning 12:00 AM (00:00) to 11:00 PM (23:00) with hourly row dividers, sticky hour labels, and auto-scroll to 7:00 AM on load.
