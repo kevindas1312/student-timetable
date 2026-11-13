@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050810">
+  <meta name="description" content="A calm, focused command center for your study week.">
+  <title>Orbit — Study Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div><div class="ambient ambient-three"></div>
+  <div class="app-shell">
+    <aside class="sidebar glass-panel">
+      <a class="brand" href="#top" aria-label="Orbit dashboard home"><span class="brand-mark"><i data-lucide="orbit"></i></span><span>orbit<span class="brand-dot">.</span></span></a>
+      <div class="sidebar-caption">WORKSPACE</div>
+      <nav class="side-nav" aria-label="Main navigation">
+        <a class="nav-item active" href="#overview"><i data-lucide="layout-dashboard"></i><span>Overview</span><span class="nav-pip"></span></a>
+        <a class="nav-item" href="#timetable"><i data-lucide="calendar-days"></i><span>Timetable</span></a>
+        <a class="nav-item" href="#tasks"><i data-lucide="list-checks"></i><span>Study tasks</span><span class="nav-count" id="nav-task-count">0</span></a>
+        <a class="nav-item" href="#exams"><i data-lucide="timer"></i><span>Exams</span></a>
+        <a class="nav-item" href="#focus"><i data-lucide="scan-line"></i><span>Focus room</span></a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="storage-card"><div class="storage-icon"><i data-lucide="shield-check"></i></div><div><strong>Private by design</strong><p>Your data stays on this device.</p></div><span class="online-dot"></span></div>
+        <div class="profile-row"><div class="avatar">S</div><div class="profile-copy"><strong>My workspace</strong><span>Personal dashboard</span></div><button class="icon-button small" id="export-btn-side" aria-label="Export data" title="Export data"><i data-lucide="download"></i></button></div>
+      </div>
+    </aside>
+
+    <main id="top" class="main-content">
+      <header class="topbar" id="overview">
+        <div class="breadcrumb"><span>Workspace</span><i data-lucide="chevron-right"></i><strong>Overview</strong></div>
+        <div class="topbar-right"><span class="live-status"><span class="online-dot"></span> ALL SYSTEMS LOCAL</span><span class="topbar-divider"></span><span class="top-date" id="top-date">—</span><button class="icon-button mobile-menu" id="mobile-menu" aria-label="Toggle navigation"><i data-lucide="menu"></i></button></div>
+      </header>
+
+      <section class="welcome-row reveal" style="--delay: 30ms">
+        <div><div class="eyebrow"><span class="eyebrow-line"></span> YOUR PERSONAL COMMAND CENTER</div><h1>Make this week <span>count.</span></h1><p class="welcome-subtitle">A little progress, every day. Here’s your study pulse.</p></div>
+        <div class="welcome-actions"><div class="today-chip"><span class="today-chip-icon"><i data-lucide="sun"></i></span><span><small>TODAY</small><strong id="today-label">—</strong></span></div><button class="button button-primary" id="quick-add"><i data-lucide="plus"></i> Add session</button></div>
+      </section>
+
+      <section class="stat-grid" aria-label="Weekly progress">
+        <article class="stat-card glass-panel reveal" style="--delay: 80ms"><div class="stat-heading"><span>STUDY HOURS</span><span class="stat-icon cyan"><i data-lucide="hourglass"></i></span></div><div class="stat-value" id="stat-hours">0<span>h</span></div><div class="stat-foot"><span class="stat-dot cyan-bg"></span><span id="stat-sessions">0 sessions scheduled</span><span class="stat-foot-end">THIS WEEK</span></div><div class="sparkline cyan-spark"><i style="height:28%"></i><i style="height:48%"></i><i style="height:38%"></i><i style="height:68%"></i><i style="height:54%"></i><i style="height:82%"></i><i style="height:70%"></i><i style="height:100%"></i></div></article>
+        <article class="stat-card glass-panel reveal" style="--delay: 130ms"><div class="stat-heading"><span>TASK COMPLETION</span><span class="stat-icon violet"><i data-lucide="check-check"></i></span></div><div class="stat-value" id="stat-completion">0<span>%</span></div><div class="progress-track stat-progress"><div id="stat-task-progress" class="progress-fill violet-fill" style="width:0%"></div></div><div class="stat-foot"><span id="stat-task-caption">No tasks yet</span><span class="stat-foot-end">ALL TASKS</span></div></article>
+        <article class="stat-card glass-panel reveal" style="--delay: 180ms"><div class="stat-heading"><span>NEXT MILESTONE</span><span class="stat-icon amber"><i data-lucide="flag-triangle-right"></i></span></div><div class="stat-value milestone-value" id="stat-next-exam">—</div><div class="stat-foot"><span class="stat-dot amber-bg"></span><span id="stat-next-exam-name">Add an upcoming exam</span><span class="stat-foot-end">COUNTING DOWN</span></div><div class="milestone-line"></div></article>
+      </section>
+
+      <section class="content-grid">
+        <div class="primary-column">
+          <section class="panel glass-panel timetable-panel reveal" id="timetable" style="--delay: 220ms">
+            <div class="panel-heading schedule-heading"><div><div class="section-kicker"><span class="kicker-square cyan-square"></span> PLAN YOUR WEEK</div><h2>Weekly timetable</h2><p class="panel-subtitle">Your week, at a glance.</p></div><div class="schedule-tools"><button class="icon-button" id="week-prev" aria-label="Previous week"><i data-lucide="chevron-left"></i></button><button class="week-label" id="week-label" aria-live="polite">—</button><button class="icon-button" id="week-next" aria-label="Next week"><i data-lucide="chevron-right"></i></button><button class="button button-outline" id="today-btn">Today</button><button class="button button-primary add-session-btn" id="add-session"><i data-lucide="plus"></i><span>Session</span></button></div></div>
+            <div class="calendar-legend"><span><i class="legend-dot cyan-bg"></i> Lecture</span><span><i class="legend-dot violet-bg"></i> Lab</span><span><i class="legend-dot emerald-bg"></i> Study</span><span><i class="legend-dot amber-bg"></i> Other</span><span class="legend-help"><i data-lucide="mouse-pointer-2"></i> Click a session to edit</span></div>
+            <div class="calendar-viewport" id="calendar-viewport"><div class="calendar-grid" id="calendar-grid"></div></div>
+          </section>
+
+          <section class="panel glass-panel tasks-panel reveal" id="tasks" style="--delay: 270ms">
+            <div class="panel-heading"><div><div class="section-kicker"><span class="kicker-square violet-square"></span> KEEP YOUR MOMENTUM</div><h2>Study tasks <span class="heading-count" id="task-heading-count">0</span></h2><p class="panel-subtitle">Small steps add up to big things.</p></div><button class="button button-outline" id="add-task"><i data-lucide="plus"></i> Add task</button></div>
+            <div class="task-toolbar"><div class="task-filters" role="tablist" aria-label="Filter tasks"><button class="filter-button active" data-filter="all" role="tab" aria-selected="true">All <span id="filter-all-count">0</span></button><button class="filter-button" data-filter="active" role="tab" aria-selected="false">In progress</button><button class="filter-button" data-filter="completed" role="tab" aria-selected="false">Completed</button></div><span class="task-due-label"><i data-lucide="calendar-clock"></i> Due soon</span></div>
+            <div id="task-list" class="task-list"></div>
+            <div class="task-footer"><div class="task-progress-copy"><span class="progress-orb"><i data-lucide="sparkles"></i></span><span><strong id="task-progress-title">You're building momentum</strong><small id="task-progress-subtitle">Complete a task to start your progress.</small></span></div><div class="task-progress-meter"><span id="task-progress-percent">0%</span><div class="progress-track"><div id="task-list-progress" class="progress-fill violet-fill" style="width:0%"></div></div></div></div>
+          </section>
+        </div>
+
+        <aside class="right-column">
+          <section class="panel glass-panel exam-panel reveal" id="exams" style="--delay: 250ms">
+            <div class="panel-heading compact-heading"><div><div class="section-kicker"><span class="kicker-square amber-square"></span> ON THE HORIZON</div><h2>Exam countdown</h2></div><button class="icon-button" id="add-exam" aria-label="Add exam" title="Add exam"><i data-lucide="plus"></i></button></div>
+            <p class="panel-subtitle">Every second brings you closer.</p><div id="exam-list" class="exam-list"></div><button class="text-button" id="manage-exams">Manage exams <i data-lucide="arrow-up-right"></i></button>
+          </section>
+
+          <section class="panel glass-panel focus-panel reveal" id="focus" style="--delay: 300ms">
+            <div class="focus-glow"></div><div class="panel-heading compact-heading focus-heading"><div><div class="section-kicker"><span class="kicker-square emerald-square"></span> DEEP WORK MODE</div><h2>Focus room</h2></div><button class="icon-button focus-more" id="focus-reset" aria-label="Reset timer" title="Reset timer"><i data-lucide="rotate-ccw"></i></button></div>
+            <div class="focus-mode-tabs" role="tablist" aria-label="Focus timer mode"><button class="focus-mode active" data-mode="focus" role="tab" aria-selected="true">Focus</button><button class="focus-mode" data-mode="short" role="tab" aria-selected="false">Short break</button><button class="focus-mode" data-mode="long" role="tab" aria-selected="false">Long break</button></div>
+            <div class="timer-wrap"><svg class="timer-ring" viewBox="0 0 220 220" aria-hidden="true"><circle class="timer-track" cx="110" cy="110" r="96"></circle><circle class="timer-progress" id="timer-progress" cx="110" cy="110" r="96"></circle></svg><div class="timer-center"><span class="timer-status"><i class="online-dot"></i><span id="timer-status">READY TO FOCUS</span></span><div class="timer-time" id="timer-time">25:00</div><div class="timer-mode-label" id="timer-mode-label">FOCUS SESSION</div></div></div>
+            <div class="timer-controls"><button class="button button-primary timer-start" id="timer-start"><i data-lucide="play"></i><span>Start focus</span></button><button class="icon-button timer-sound" id="sound-toggle" aria-label="Toggle chime"><i data-lucide="volume-2"></i></button></div>
+            <div class="focus-footer"><span><i data-lucide="coffee"></i> Take a break after each session</span><span id="focus-sessions">0 sessions</span></div>
+          </section>
+
+          <section class="backup-card reveal" style="--delay: 350ms"><div class="backup-icon"><i data-lucide="database-backup"></i></div><div class="backup-copy"><strong>Your data, your device.</strong><span>Back up or restore your workspace.</span></div><div class="backup-actions"><button class="button button-outline" id="import-btn"><i data-lucide="upload"></i> Import</button><button class="button button-outline" id="export-btn"><i data-lucide="download"></i> Export</button></div><input id="import-file" type="file" accept="application/json,.json" hidden></section>
+        </aside>
+      </section>
+      <footer class="app-footer"><span>Made for your next big idea <span class="footer-star">✳</span></span><span><span class="online-dot"></span> Everything saved automatically <span class="footer-sep">·</span> <span class="mono-text" id="save-indicator">LOCAL STORAGE</span></span></footer>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modal-backdrop" hidden><section class="dialog glass-panel" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="dialog-header"><div><div class="section-kicker"><span class="kicker-square cyan-square"></span><span id="modal-kicker">YOUR SCHEDULE</span></div><h2 id="modal-title">Add a session</h2></div><button class="icon-button" id="modal-close" aria-label="Close dialog"><i data-lucide="x"></i></button></div><form id="session-form" class="dialog-form"><label>Session title<input id="session-title" name="title" required maxlength="70" placeholder="e.g. Data Structures"></label><div class="form-row"><label>Day<select id="session-day" name="day" required></select></label><label>Type<select id="session-type" name="type"><option value="lecture">Lecture</option><option value="lab">Lab</option><option value="study">Study</option><option value="other">Other</option></select></label></div><div class="form-row"><label>Start time<input id="session-start" name="start" type="time" value="09:00" required></label><label>End time<input id="session-end" name="end" type="time" value="10:00" required></label></div><label>Location <span class="optional-label">OPTIONAL</span><input id="session-location" name="location" maxlength="60" placeholder="Room or campus"></label><div class="dialog-actions"><button class="button button-danger" id="session-delete" type="button" hidden><i data-lucide="trash-2"></i> Delete</button><span class="dialog-actions-spacer"></span><button class="button button-outline" type="button" data-close-modal>Cancel</button><button class="button button-primary" type="submit"><i data-lucide="check"></i> Save session</button></div></form></section></div>
+
+  <div class="modal-backdrop" id="task-backdrop" hidden><section class="dialog glass-panel" role="dialog" aria-modal="true" aria-labelledby="task-modal-title"><div class="dialog-header"><div><div class="section-kicker"><span class="kicker-square violet-square"></span> BUILD YOUR MOMENTUM</div><h2 id="task-modal-title">Add a study task</h2></div><button class="icon-button" id="task-modal-close" aria-label="Close dialog"><i data-lucide="x"></i></button></div><form id="task-form" class="dialog-form"><label>What needs to get done?<input id="task-title" required maxlength="100" placeholder="e.g. Review chapter 4 notes"></label><div class="form-row"><label>Due date<input id="task-due" type="date" required></label><label>Priority<select id="task-priority"><option value="low">Low</option><option value="med" selected>Medium</option><option value="high">High</option></select></label></div><div class="dialog-actions"><button class="button button-danger" id="task-delete" type="button" hidden><i data-lucide="trash-2"></i> Delete</button><span class="dialog-actions-spacer"></span><button class="button button-outline" type="button" data-close-task>Cancel</button><button class="button button-primary" type="submit"><i data-lucide="check"></i> Save task</button></div></form></section></div>
+
+  <div class="modal-backdrop" id="exam-backdrop" hidden><section class="dialog glass-panel" role="dialog" aria-modal="true" aria-labelledby="exam-modal-title"><div class="dialog-header"><div><div class="section-kicker"><span class="kicker-square amber-square"></span> YOUR MILESTONES</div><h2 id="exam-modal-title">Add an exam</h2></div><button class="icon-button" id="exam-modal-close" aria-label="Close dialog"><i data-lucide="x"></i></button></div><form id="exam-form" class="dialog-form"><label>Exam name<input id="exam-title" required maxlength="70" placeholder="e.g. Organic Chemistry Midterm"></label><div class="form-row"><label>Date<input id="exam-date" type="date" required></label><label>Time<input id="exam-time" type="time" value="09:00"></label></div><div class="form-row"><label>Type<select id="exam-type"><option>Midterm</option><option>Final</option><option>Quiz</option><option>Other</option></select></label><label>Course or location <span class="optional-label">OPTIONAL</span><input id="exam-note" maxlength="60" placeholder="e.g. Chemistry · Hall B"></label></div><div class="dialog-actions"><button class="button button-danger" id="exam-delete" type="button" hidden><i data-lucide="trash-2"></i> Delete</button><span class="dialog-actions-spacer"></span><button class="button button-outline" type="button" data-close-exam>Cancel</button><button class="button button-primary" type="submit"><i data-lucide="check"></i> Save exam</button></div></form></section></div>
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+  <script src="app.js"></script>
+</body>
+</html>
