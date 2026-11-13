@@ -182,9 +182,9 @@
     }
     const currentTrack = weekOffset === 0 ? $('.day-track.today-track', root) : null;
     if (currentTrack) {
-      const now = new Date(); const minutes = now.getHours() * 60 + now.getMinutes();
-      if (minutes >= CALENDAR_START_MINUTE && minutes <= CALENDAR_END_MINUTE) {
-        const line = document.createElement('div'); line.className = 'current-time-line'; line.style.top = `${minutes - CALENDAR_START_MINUTE}px`; line.title = `Current time ${formatClock(now)}`; currentTrack.append(line);
+      const now = new Date(); const minutesSinceMidnight = now.getHours() * 60 + now.getMinutes();
+      if (minutesSinceMidnight < CALENDAR_END_MINUTE) {
+        const line = document.createElement('div'); line.className = 'current-time-line'; line.style.top = `${minutesSinceMidnight / 60 * CALENDAR_HOUR_HEIGHT}px`; line.title = `Current time ${formatClock(now)}`; currentTrack.append(line);
       }
     }
     $('#week-label').textContent = weekRange();
@@ -342,9 +342,9 @@
     }
     const line = $('.current-time-line');
     if (line && weekOffset === 0) {
-      const now = new Date(); const minutes = now.getHours() * 60 + now.getMinutes();
-      if (minutes < 420 || minutes > 1200) { line.remove(); }
-      else line.style.top = `${minutes - 420}px`;
+      const now = new Date(); const minutesSinceMidnight = now.getHours() * 60 + now.getMinutes();
+      if (minutesSinceMidnight >= CALENDAR_END_MINUTE) { line.remove(); }
+      else line.style.top = `${minutesSinceMidnight / 60 * CALENDAR_HOUR_HEIGHT}px`;
     }
   }
 
