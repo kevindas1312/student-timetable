@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#050810">
+  <meta name="theme-color" content="#050505">
   <meta name="description" content="A calm, focused command center for your study week.">
-  <title>Orbit — Study Dashboard</title>
+  <title>Kevin's Timetable</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div><div class="ambient ambient-three"></div>
   <div class="app-shell">
     <aside class="sidebar glass-panel">
-      <a class="brand" href="#top" aria-label="Orbit dashboard home"><span class="brand-mark"><i data-lucide="orbit"></i></span><span>orbit<span class="brand-dot">.</span></span></a>
+      <a class="brand" href="#top" aria-label="Kevin's Timetable home"><span class="brand-mark"><i data-lucide="orbit"></i></span><span>Kevin's Timetable</span></a>
       <div class="sidebar-caption">WORKSPACE</div>
       <nav class="side-nav" aria-label="Main navigation">
         <a class="nav-item active" href="#overview"><i data-lucide="layout-dashboard"></i><span>Overview</span><span class="nav-pip"></span></a>
@@ -45,7 +45,7 @@
 
       <section class="stat-grid" aria-label="Weekly progress">
         <article class="stat-card glass-panel reveal" style="--delay: 80ms"><div class="stat-heading"><span>STUDY HOURS</span><span class="stat-icon cyan"><i data-lucide="hourglass"></i></span></div><div class="stat-value" id="stat-hours">0<span>h</span></div><div class="stat-foot"><span class="stat-dot cyan-bg"></span><span id="stat-sessions">0 sessions scheduled</span><span class="stat-foot-end">THIS WEEK</span></div><div class="sparkline cyan-spark"><i style="height:28%"></i><i style="height:48%"></i><i style="height:38%"></i><i style="height:68%"></i><i style="height:54%"></i><i style="height:82%"></i><i style="height:70%"></i><i style="height:100%"></i></div></article>
-        <article class="stat-card glass-panel reveal" style="--delay: 130ms"><div class="stat-heading"><span>TASK COMPLETION</span><span class="stat-icon violet"><i data-lucide="check-check"></i></span></div><div class="stat-value" id="stat-completion">0<span>%</span></div><div class="progress-track stat-progress"><div id="stat-task-progress" class="progress-fill violet-fill" style="width:0%"></div></div><div class="stat-foot"><span id="stat-task-caption">No tasks yet</span><span class="stat-foot-end">ALL TASKS</span></div></article>
+        <article class="stat-card task-completion-card glass-panel reveal" style="--delay: 130ms"><div class="stat-heading"><span>TASK COMPLETION</span><span class="stat-icon violet"><i data-lucide="check-check"></i></span></div><div class="stat-value" id="stat-completion">0<span>%</span></div><div class="progress-track stat-progress"><div id="stat-task-progress" class="progress-fill violet-fill" style="width:0%"></div></div><div class="stat-foot"><span id="stat-task-caption">No tasks yet</span><span class="stat-foot-end">ALL TASKS</span></div></article>
         <article class="stat-card glass-panel reveal" style="--delay: 180ms"><div class="stat-heading"><span>NEXT MILESTONE</span><span class="stat-icon amber"><i data-lucide="flag-triangle-right"></i></span></div><div class="stat-value milestone-value" id="stat-next-exam">—</div><div class="stat-foot"><span class="stat-dot amber-bg"></span><span id="stat-next-exam-name">Add an upcoming exam</span><span class="stat-foot-end">COUNTING DOWN</span></div><div class="milestone-line"></div></article>
       </section>
 

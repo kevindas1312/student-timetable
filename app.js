@@ -51,7 +51,7 @@
   }
 
   function normalizeData(raw) {
-    if (!raw || typeof raw !== 'object' || !Array.isArray(raw.sessions) || !Array.isArray(raw.tasks) || !Array.isArray(raw.exams)) throw new Error('This file does not contain a valid Orbit workspace.');
+    if (!raw || typeof raw !== 'object' || !Array.isArray(raw.sessions) || !Array.isArray(raw.tasks) || !Array.isArray(raw.exams)) throw new Error("This file does not contain a valid Kevin's Timetable workspace.");
     const sessions = raw.sessions.map(item => {
       if (!item || typeof item.title !== 'string' || !item.title.trim() || !Number.isInteger(Number(item.day)) || Number(item.day) < 0 || Number(item.day) > 6 || !validTime(item.start) || !validTime(item.end) || item.end <= item.start) throw new Error('One or more timetable sessions are invalid.');
       return { id: String(item.id || makeId()), title: item.title.slice(0, 70), day: Number(item.day), start: item.start, end: item.end, type: ['lecture', 'lab', 'study', 'other'].includes(item.type) ? item.type : 'other', location: typeof item.location === 'string' ? item.location.slice(0, 60) : '' };
@@ -140,19 +140,24 @@
     const root = $('#calendar-grid');
     const monday = localMonday(new Date()); monday.setDate(monday.getDate() + weekOffset * 7);
     const todayIndex = (new Date().getDay() + 6) % 7;
+    const headSpacer = document.createElement('div'); headSpacer.className = 'calendar-head-spacer';
+    headSpacer.style.gridRow = '1'; headSpacer.style.gridColumn = '1'; root.replaceChildren(headSpacer);
+    for (let day = 0; day < 7; day++) {
+      const date = addDays(monday, day); const isToday = weekOffset === 0 && day === todayIndex;
+      const head = document.createElement('div'); head.className = `day-head ${isToday ? 'today' : ''}`;
+      head.style.gridRow = '1'; head.style.gridColumn = String(day + 2);
+      head.innerHTML = `${isToday ? '<i class="today-dot"></i>' : ''}<span>${SHORT_DAYS[day]}</span><strong>${date.getDate()}</strong>`; root.append(head);
+    }
     const axis = document.createElement('div'); axis.className = 'time-axis';
+    axis.style.gridRow = '2'; axis.style.gridColumn = '1';
     for (let hour = 7; hour <= 20; hour++) {
       const label = document.createElement('span'); label.className = 'time-label'; label.style.top = `${(hour - 7) * 60}px`;
       label.textContent = `${hour % 12 || 12}${hour < 12 ? 'am' : 'pm'}`; axis.append(label);
     }
-    root.replaceChildren(axis);
-    for (let day = 0; day < 7; day++) {
-      const date = addDays(monday, day); const isToday = weekOffset === 0 && day === todayIndex;
-      const head = document.createElement('div'); head.className = `day-head ${isToday ? 'today' : ''}`;
-      head.innerHTML = `${isToday ? '<i class="today-dot"></i>' : ''}<span>${SHORT_DAYS[day]}</span><strong>${date.getDate()}</strong>`; root.append(head);
-    }
+    root.append(axis);
     for (let day = 0; day < 7; day++) {
       const track = document.createElement('div'); track.className = `day-track ${weekOffset === 0 && day === todayIndex ? 'today-track' : ''}`; track.dataset.day = String(day);
+      track.style.gridRow = '2'; track.style.gridColumn = String(day + 2);
       state.sessions.filter(session => session.day === day).sort((a, b) => a.start.localeCompare(b.start)).forEach(session => {
         const start = session.start.split(':').map(Number); const end = session.end.split(':').map(Number);
         const startMin = start[0] * 60 + start[1]; const endMin = end[0] * 60 + end[1];
@@ -257,7 +262,7 @@
     $('#timer-mode-label').textContent = mode.label;
     const total = mode.minutes * 60; const progress = 1 - remaining / total;
     $('#timer-progress').style.strokeDashoffset = String(603.19 * (1 - Math.max(0, Math.min(1, progress))));
-    $('#timer-progress').style.stroke = timer.mode === 'focus' ? '#39d7a1' : timer.mode === 'short' ? '#19c7e6' : '#a78bfa';
+    $('#timer-progress').style.stroke = '#facc15';
     $('#timer-status').textContent = timer.running ? 'IN THE ZONE' : remaining === 0 ? 'SESSION COMPLETE' : 'READY TO FOCUS';
     const start = $('#timer-start'); start.classList.toggle('running', timer.running);
     start.innerHTML = timer.running ? '<i data-lucide="pause"></i><span>Pause session</span>' : '<i data-lucide="play"></i><span>Start focus</span>';
@@ -345,9 +350,9 @@
   }
 
   function exportData() {
-    const payload = { ...state, exportedAt: new Date().toISOString(), app: 'Orbit Study Dashboard' };
+    const payload = { ...state, exportedAt: new Date().toISOString(), app: "Kevin's Timetable" };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob);
-    const link = document.createElement('a'); link.href = url; link.download = `orbit-study-backup-${isoDate(new Date())}.json`; document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+    const link = document.createElement('a'); link.href = url; link.download = `kevin-timetable-backup-${isoDate(new Date())}.json`; document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
     toast('Workspace backup downloaded.');
   }
 

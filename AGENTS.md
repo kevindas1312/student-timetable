@@ -7,8 +7,8 @@
 
 ## 2. Futuristic Aesthetic & Visual Design System
 - **Theme:** Deep-space obsidian dark mode (`#050810` base canvas) paired with translucent frosted glass Bento-grid panels (`bg-slate-900/50 backdrop-blur-xl`).
-- **Borders & Depth:** Use subtle luminous 1px borders (`border-white/10`) with inner top-edge specular highlights and ambient radial background glow blobs (`cyan-500/15`, `indigo-500/15`, `violet-500/15`) behind key cards.
-- **Accents & Telemetry:** High-contrast neon-cyan (`#06b6d4`), electric violet (`#8b5cf6`), and emerald (`#10b981`) accents for active states, live indicators, and progress rings.
+- **Borders & Depth:** Use subtle luminous 1px borders (`border-white/10`) with inner top-edge specular highlights and ambient radial background glow blobs (`amber-400/15`, `indigo-500/15`, `violet-500/15`) behind key cards.
+- **Accents & Telemetry:** High-contrast electric gold-yellow (`#facc15`), warm amber (`#f59e0b`), and emerald (`#10b981`) accents for active states, live indicators, and progress rings.
 - **Dynamic Live Indicators:** Highlight the current day column and draw a glowing horizontal "current time" laser indicator line across the active timetable slot.
 
 ## 3. Motion, Physics & Smooth Transitions
