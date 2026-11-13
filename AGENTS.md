@@ -29,3 +29,15 @@
 ## 5. Code Quality & File Structure
 - Separate markup (`index.html`), custom keyframes/glass utilities (`styles.css`), and state/DOM logic (`app.js`) cleanly.
 - Every button, filter, modal, and toggle must be 100% functional with zero placeholder stubs.
+
+## Custom Color & Time Rules
+- **Session Types & Colors:** 
+  - Lectures: Yellow (`#facc15`)
+  - Labs: Purple (`#a855f7`)
+  - Tutorials: Red (`#ef4444`)
+  - Study: Blue (`#3b82f6`)
+  - Clubs: Green (`#10b981`)
+  - Competitions: Turquoise (`#06b6d4`)
+  - Other: Brown (`#b45309`)
+- **Task Priority Icons:** Low = Green, Medium = Yellow, High = Red.
+- **Timetable Hours:** Scrollable grid spanning 12:00 AM (00:00) to 12:00 PM (12:00) with sticky hour labels and vertical time slots.

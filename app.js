@@ -4,6 +4,9 @@
   const STORAGE_KEY = 'orbit-study-dashboard-v1';
   const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   const SHORT_DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+  const SESSION_TYPES = ['lecture', 'lab', 'tutorial', 'study', 'club', 'competition', 'other'];
+  const CALENDAR_START_MINUTE = 0;
+  const CALENDAR_END_MINUTE = 12 * 60;
   const TIMER_MODES = { focus: { label: 'FOCUS SESSION', minutes: 25 }, short: { label: 'SHORT BREAK', minutes: 5 }, long: { label: 'LONG BREAK', minutes: 15 } };
   const validTime = value => typeof value === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
   const validDate = value => {
@@ -54,7 +57,7 @@
     if (!raw || typeof raw !== 'object' || !Array.isArray(raw.sessions) || !Array.isArray(raw.tasks) || !Array.isArray(raw.exams)) throw new Error("This file does not contain a valid Kevin's Timetable workspace.");
     const sessions = raw.sessions.map(item => {
       if (!item || typeof item.title !== 'string' || !item.title.trim() || !Number.isInteger(Number(item.day)) || Number(item.day) < 0 || Number(item.day) > 6 || !validTime(item.start) || !validTime(item.end) || item.end <= item.start) throw new Error('One or more timetable sessions are invalid.');
-      return { id: String(item.id || makeId()), title: item.title.slice(0, 70), day: Number(item.day), start: item.start, end: item.end, type: ['lecture', 'lab', 'study', 'other'].includes(item.type) ? item.type : 'other', location: typeof item.location === 'string' ? item.location.slice(0, 60) : '' };
+      return { id: String(item.id || makeId()), title: item.title.slice(0, 70), day: Number(item.day), start: item.start, end: item.end, type: SESSION_TYPES.includes(item.type) ? item.type : 'other', location: typeof item.location === 'string' ? item.location.slice(0, 60) : '' };
     });
     const tasks = raw.tasks.map(item => {
       if (!item || typeof item.title !== 'string' || !item.title.trim() || !validDate(item.due)) throw new Error('One or more study tasks are invalid.');
@@ -89,6 +92,7 @@
   let state = loadData();
   let weekOffset = 0;
   let taskFilter = 'all';
+  const activeSessionTypes = new Set(SESSION_TYPES);
   let examExpanded = false;
   let editingSessionId = null;
   let editingTaskId = null;
@@ -150,18 +154,21 @@
     }
     const axis = document.createElement('div'); axis.className = 'time-axis';
     axis.style.gridRow = '2'; axis.style.gridColumn = '1';
-    for (let hour = 7; hour <= 20; hour++) {
-      const label = document.createElement('span'); label.className = 'time-label'; label.style.top = `${(hour - 7) * 60}px`;
+    for (let hour = 0; hour <= 12; hour++) {
+      const label = document.createElement('span'); label.className = `time-label${hour === 0 ? ' time-label-start' : ''}${hour === 12 ? ' time-label-end' : ''}`; label.style.top = `${hour * 60}px`;
       label.textContent = `${hour % 12 || 12}${hour < 12 ? 'am' : 'pm'}`; axis.append(label);
     }
     root.append(axis);
     for (let day = 0; day < 7; day++) {
       const track = document.createElement('div'); track.className = `day-track ${weekOffset === 0 && day === todayIndex ? 'today-track' : ''}`; track.dataset.day = String(day);
       track.style.gridRow = '2'; track.style.gridColumn = String(day + 2);
-      state.sessions.filter(session => session.day === day).sort((a, b) => a.start.localeCompare(b.start)).forEach(session => {
+      state.sessions.filter(session => session.day === day && activeSessionTypes.has(session.type)).sort((a, b) => a.start.localeCompare(b.start)).forEach(session => {
         const start = session.start.split(':').map(Number); const end = session.end.split(':').map(Number);
         const startMin = start[0] * 60 + start[1]; const endMin = end[0] * 60 + end[1];
-        const top = Math.max(0, (startMin - 420)); const duration = endMin - startMin;
+        if (endMin <= CALENDAR_START_MINUTE || startMin >= CALENDAR_END_MINUTE) return;
+        const visibleStart = Math.max(startMin, CALENDAR_START_MINUTE);
+        const visibleEnd = Math.min(endMin, CALENDAR_END_MINUTE);
+        const top = visibleStart - CALENDAR_START_MINUTE; const duration = visibleEnd - visibleStart;
         const block = document.createElement('button'); block.type = 'button'; block.className = `session-block ${session.type} ${duration < 51 ? 'short-block' : ''}`;
         block.dataset.id = session.id; block.style.top = `${top}px`; block.style.height = `${Math.max(32, duration)}px`; block.setAttribute('aria-label', `${session.title}, ${WEEKDAYS[day]}, ${session.start} to ${session.end}. Edit session.`);
         block.innerHTML = `<span class="session-title">${escapeHTML(session.title)}</span><span class="session-time">${escapeHTML(formatTime(session.start))} – ${escapeHTML(formatTime(session.end))}</span>${session.location ? `<span class="session-location">${escapeHTML(session.location)}</span>` : ''}`;
@@ -172,13 +179,13 @@
     const currentTrack = weekOffset === 0 ? $('.day-track.today-track', root) : null;
     if (currentTrack) {
       const now = new Date(); const minutes = now.getHours() * 60 + now.getMinutes();
-      if (minutes >= 420 && minutes <= 1200) {
-        const line = document.createElement('div'); line.className = 'current-time-line'; line.style.top = `${minutes - 420}px`; line.title = `Current time ${formatClock(now)}`; currentTrack.append(line);
+      if (minutes >= CALENDAR_START_MINUTE && minutes <= CALENDAR_END_MINUTE) {
+        const line = document.createElement('div'); line.className = 'current-time-line'; line.style.top = `${minutes - CALENDAR_START_MINUTE}px`; line.title = `Current time ${formatClock(now)}`; currentTrack.append(line);
       }
     }
     $('#week-label').textContent = weekRange();
-    const noSessions = state.sessions.length === 0;
-    if (noSessions) $$('.day-track', root).forEach(track => { track.innerHTML = '<div class="no-sessions">No sessions<br>Click + Session to begin</div>'; });
+    const visibleSessions = state.sessions.filter(session => activeSessionTypes.has(session.type) && session.start < '12:00' && session.end > '00:00');
+    if (!visibleSessions.length) $$('.day-track', root).forEach(track => { track.innerHTML = `<div class="no-sessions">${state.sessions.length ? 'No matching sessions' : 'No sessions<br>Click + Session to begin'}</div>`; });
   }
 
   function formatTime(value) {
@@ -399,6 +406,13 @@
 
   $('#add-task').addEventListener('click', () => openTaskModal());
   $$('.filter-button').forEach(button => button.addEventListener('click', () => { taskFilter = button.dataset.filter; renderTasks(); }));
+  $$('.session-filter').forEach(button => button.addEventListener('click', () => {
+    const type = button.dataset.sessionFilter;
+    if (activeSessionTypes.has(type)) activeSessionTypes.delete(type); else activeSessionTypes.add(type);
+    button.classList.toggle('active', activeSessionTypes.has(type));
+    button.setAttribute('aria-pressed', String(activeSessionTypes.has(type)));
+    renderCalendar();
+  }));
   $('#task-list').addEventListener('click', event => {
     const row = event.target.closest('.task-row'); if (!row) return;
     const task = state.tasks.find(item => item.id === row.dataset.id); if (!task) return;
