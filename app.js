@@ -5,6 +5,7 @@
   const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   const SHORT_DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
   const SESSION_TYPES = ['lecture', 'lab', 'tutorial', 'study', 'club', 'competition', 'other'];
+  const STUDY_HOUR_SESSION_TYPES = new Set(['lecture', 'tutorial', 'lab', 'study']);
   const CALENDAR_START_MINUTE = 0;
   const CALENDAR_END_MINUTE = 24 * 60;
   const CALENDAR_HOUR_HEIGHT = 60;
@@ -59,7 +60,8 @@
     if (!raw || typeof raw !== 'object' || !Array.isArray(raw.sessions) || !Array.isArray(raw.tasks) || !Array.isArray(raw.exams)) throw new Error("This file does not contain a valid Kevin's Timetable workspace.");
     const sessions = raw.sessions.map(item => {
       if (!item || typeof item.title !== 'string' || !item.title.trim() || !Number.isInteger(Number(item.day)) || Number(item.day) < 0 || Number(item.day) > 6 || !validTime(item.start) || !validTime(item.end) || item.end <= item.start) throw new Error('One or more timetable sessions are invalid.');
-      return { id: String(item.id || makeId()), title: item.title.slice(0, 70), day: Number(item.day), start: item.start, end: item.end, type: SESSION_TYPES.includes(item.type) ? item.type : 'other', location: typeof item.location === 'string' ? item.location.slice(0, 60) : '' };
+      const type = typeof item.type === 'string' ? item.type.toLowerCase() : '';
+      return { id: String(item.id || makeId()), title: item.title.slice(0, 70), day: Number(item.day), start: item.start, end: item.end, type: SESSION_TYPES.includes(type) ? type : 'other', location: typeof item.location === 'string' ? item.location.slice(0, 60) : '' };
     });
     const tasks = raw.tasks.map(item => {
       if (!item || typeof item.title !== 'string' || !item.title.trim() || !validDate(item.due)) throw new Error('One or more study tasks are invalid.');
@@ -259,7 +261,11 @@
   }
 
   function updateStats() {
-    const hours = state.sessions.reduce((sum, session) => { const [sh, sm] = session.start.split(':').map(Number); const [eh, em] = session.end.split(':').map(Number); return sum + Math.max(0, eh * 60 + em - sh * 60 - sm) / 60; }, 0);
+    const hours = state.sessions.reduce((sum, session) => {
+      if (typeof session.type !== 'string' || !STUDY_HOUR_SESSION_TYPES.has(session.type.toLowerCase())) return sum;
+      const [sh, sm] = session.start.split(':').map(Number); const [eh, em] = session.end.split(':').map(Number);
+      return sum + Math.max(0, eh * 60 + em - sh * 60 - sm) / 60;
+    }, 0);
     $('#stat-hours').innerHTML = `${Number.isInteger(hours) ? hours : hours.toFixed(1)}<span>h</span>`;
     $('#stat-sessions').textContent = `${state.sessions.length} session${state.sessions.length === 1 ? '' : 's'} scheduled`;
     const next = state.exams.filter(exam => examDateTime(exam).getTime() >= Date.now()).sort((a, b) => examDateTime(a) - examDateTime(b))[0];
