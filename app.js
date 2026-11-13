@@ -6,7 +6,9 @@
   const SHORT_DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
   const SESSION_TYPES = ['lecture', 'lab', 'tutorial', 'study', 'club', 'competition', 'other'];
   const CALENDAR_START_MINUTE = 0;
-  const CALENDAR_END_MINUTE = 12 * 60;
+  const CALENDAR_END_MINUTE = 24 * 60;
+  const CALENDAR_HOUR_HEIGHT = 60;
+  const CALENDAR_INITIAL_SCROLL_MINUTE = 7 * 60;
   const TIMER_MODES = { focus: { label: 'FOCUS SESSION', minutes: 25 }, short: { label: 'SHORT BREAK', minutes: 5 }, long: { label: 'LONG BREAK', minutes: 15 } };
   const validTime = value => typeof value === 'string' && /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
   const validDate = value => {
@@ -154,9 +156,9 @@
     }
     const axis = document.createElement('div'); axis.className = 'time-axis';
     axis.style.gridRow = '2'; axis.style.gridColumn = '1';
-    for (let hour = 0; hour <= 12; hour++) {
-      const label = document.createElement('span'); label.className = `time-label${hour === 0 ? ' time-label-start' : ''}${hour === 12 ? ' time-label-end' : ''}`; label.style.top = `${hour * 60}px`;
-      label.textContent = `${hour % 12 || 12}${hour < 12 ? 'am' : 'pm'}`; axis.append(label);
+    for (let hour = 0; hour < CALENDAR_END_MINUTE / 60; hour++) {
+      const label = document.createElement('span'); label.className = `time-label${hour === 0 ? ' time-label-start' : ''}`; label.style.top = `${hour * CALENDAR_HOUR_HEIGHT}px`;
+      label.textContent = `${pad(hour)}:00`; axis.append(label);
     }
     root.append(axis);
     for (let day = 0; day < 7; day++) {
@@ -184,8 +186,12 @@
       }
     }
     $('#week-label').textContent = weekRange();
-    const visibleSessions = state.sessions.filter(session => activeSessionTypes.has(session.type) && session.start < '12:00' && session.end > '00:00');
-    if (!visibleSessions.length) $$('.day-track', root).forEach(track => { track.innerHTML = `<div class="no-sessions">${state.sessions.length ? 'No matching sessions' : 'No sessions<br>Click + Session to begin'}</div>`; });
+    const visibleSessions = state.sessions.filter(session => activeSessionTypes.has(session.type) && session.end > '00:00' && session.start < '24:00');
+    if (!visibleSessions.length) $$('.day-track', root).forEach(track => {
+      const emptyState = document.createElement('div'); emptyState.className = 'no-sessions';
+      emptyState.innerHTML = state.sessions.length ? 'No matching sessions' : 'No sessions<br>Click + Session to begin';
+      track.append(emptyState);
+    });
   }
 
   function formatTime(value) {
@@ -482,6 +488,10 @@
   // An expired timer restored from a closed tab is completed quietly; playback requires a live user gesture.
   if (state.timer.running && state.timer.endAt <= Date.now()) { state.timer.running = false; state.timer.endAt = null; state.timer.remaining = 0; if (state.timer.mode === 'focus') state.timer.sessions++; saveState(); }
   renderAll();
+  const calendarViewport = $('#calendar-viewport');
+  calendarViewport.style.scrollBehavior = 'auto';
+  calendarViewport.scrollTop = CALENDAR_INITIAL_SCROLL_MINUTE;
+  calendarViewport.style.removeProperty('scroll-behavior');
   saveState();
   window.addEventListener('pagehide', () => {
     clearTimeout(saveTimeout);

@@ -40,4 +40,4 @@
   - Competitions: Turquoise (`#06b6d4`)
   - Other: Brown (`#b45309`)
 - **Task Priority Icons:** Low = Green, Medium = Yellow, High = Red.
-- **Timetable Hours:** Scrollable grid spanning 12:00 AM (00:00) to 12:00 PM (12:00) with sticky hour labels and vertical time slots.
+- **Timetable Hours:** Scrollable grid spanning 12:00 AM (00:00) to 11:00 PM (23:00)  with sticky hour labels and vertical time slots.
